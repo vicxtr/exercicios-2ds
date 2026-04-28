@@ -1,9 +1,10 @@
 export default function App() {
-  const filmeFavorito = 'Educação Fisica'
+  const materiaFavorita = "Educação Fisica"
+  const filmeFavorito = "As Branquelas"
   return (
     <div>
       <h1>João Victor</h1>
-      <p>Minha materia favorita é: {filmeFavorito}</p>
+      <p>Meu filme favorito e: {filmeFavorito}</p>
     </div>
   )
 }
