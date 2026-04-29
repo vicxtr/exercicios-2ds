@@ -1,8 +1,8 @@
-import Footer from "./components/footer";
-import Header from "./components/header";
-import Contato from "./pages/contato";
-import Home from "./pages/home";
-import Sobre from "./pages/sobre";
+import Footer from "./components/footer.jsx";
+import Header from "./components/header.jsx";
+import Contato from "./pages/contato.jsx";
+import Home from "./pages/home.jsx";
+import Sobre from "./pages/sobre.jsx";
 
 export default function App() {
     return(
