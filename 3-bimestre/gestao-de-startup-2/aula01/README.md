@@ -151,3 +151,7 @@ Responda:
 1. Qual foi o problema identificado?
 2. Em que momento ocorreu o planejamento?
 3. Por que os testes foram importantes antes do lançamento?
+
+1. Alunos esqueciam trabalhos escolares.
+2. Quando a equipe decidiu criar o aplicativo.
+3. Para encontrar erros e melhorar o aplicativo antes do lançamento.

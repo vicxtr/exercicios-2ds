@@ -242,3 +242,7 @@ A equipe consegue realizar apenas **três tarefas** nesta Sprint.
 1. Quais três tarefas você escolheria?
 2. Por que elas devem ter prioridade?
 3. Qual seria um possível objetivo para essa Sprint?
+
+1. A, C e E.
+2. Porque corrigem problemas importantes e melhoram a segurança e o acesso dos usuários.
+3. Melhorar o acesso e a segurança do sistema.

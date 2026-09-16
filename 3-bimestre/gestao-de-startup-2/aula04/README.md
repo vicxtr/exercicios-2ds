@@ -206,3 +206,7 @@ Responda:
 1. Você simplesmente implementaria os cinco campos?
 2. O que deveria fazer antes?
 3. Como poderia apresentar sua preocupação à equipe?
+
+1. Não, eu questionaria a necessidade dos cinco campos.
+2. Entender a necessidade de cada campo e seu impacto no usuário.
+3. Explicaria que três campos podem ser desnecessários e tornar o cadastro mais demorado.

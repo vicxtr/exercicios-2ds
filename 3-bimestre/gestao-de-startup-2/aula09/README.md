@@ -221,3 +221,7 @@ Crie:
 1. Uma tarefa que será dada ao usuário.
 2. Duas coisas que a equipe deverá observar.
 3. Uma pergunta para fazer depois do teste.
+
+1. Encontrar e adicionar uma nova tarefa.
+2. Se o usuário encontra as tarefas facilmente e se entende como adicionar uma tarefa.
+3. O que foi mais difícil de utilizar?

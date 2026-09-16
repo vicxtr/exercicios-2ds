@@ -195,3 +195,7 @@ Antes de desenvolver qualquer coisa, responda:
 1. Qual seria a primeira coisa que a equipe deveria descobrir?
 2. Cite duas perguntas que poderiam ser feitas aos alunos.
 3. Por que não é recomendado começar desenvolvendo o aplicativo imediatamente?
+
+1. Descobrir qual problema os alunos realmente enfrentam.
+2. Como você recebe informações da escola? / O que dificulta sua comunicação com a escola?
+3. Porque é preciso entender a necessidade do usuário antes de desenvolver.

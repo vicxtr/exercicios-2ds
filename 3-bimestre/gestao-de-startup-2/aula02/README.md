@@ -131,3 +131,8 @@ Classifique cada situação como **Produto** ou **Projeto**.
 2. Plataforma de cursos utilizada por milhares de alunos.
 3. Construção de um sistema para uma empresa.
 4. Aplicativo de delivery utilizado diariamente pelos clientes.
+
+1. Projeto
+2. Produto
+3. Projeto
+4. Produto
