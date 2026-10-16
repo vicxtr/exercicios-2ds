@@ -1,314 +1,341 @@
-# 🎯 Aula 6 — Organizando Pastas de Rota e Criando um Router Main
+# 🎯 Aula 5 — Express: Configuração Básica e Criação de Rotas
 
 ## 🎯 Objetivos da Aula
 
-- Entender por que um arquivo único com todas as rotas não escala.
-- Criar um **`express.Router()`** e separar rotas em arquivos.
-- Organizar a pasta **`routes/`**.
-- Montar um **router principal** e conectá-lo com `app.use()`.
+- Entender o que é o **Express** e por que ele facilita o trabalho.
+- Instalar e configurar o Express num projeto.
+- Criar rotas com **`app.get`** e **`app.post`**.
+- Responder em JSON com **`res.json`** e definir o **status** da resposta.
 
-> Na aula anterior criamos rotas, todas no mesmo `index.js`. Funcionou com quatro rotas. Agora vamos ver o que fazer quando são quarenta.
+# 🧩 Por que Express?
 
-# 🤔 O problema do arquivo único
-
-Uma API real tem rotas de produtos, de clientes, de pedidos, de usuários. Tudo no `index.js` gera:
+Na aula 2 criamos um servidor com o módulo `http`. Para três rotas, o código ficou assim:
 
 ```jsx
-// index.js — 400 linhas
+http.createServer((req, res) => {
+    if (req.url === "/" && req.method === "GET") { ... }
+    if (req.url === "/produtos" && req.method === "GET") { ... }
+    if (req.url === "/produtos" && req.method === "POST") { ... }
+    res.statusCode = 404
+    res.end("Não encontrado")
+})
+```
+
+Imagine com vinte rotas. Uma cadeia de `if` gigante, repetindo a comparação de caminho e de método em cada uma.
+
+O **Express** é um pacote que resolve exatamente isso. Ele não substitui o `http` — ele é construído **em cima** dele e oferece uma forma organizada de declarar rotas.
+
+| Com `http` puro | Com Express |
+| --- | --- |
+| `if` para cada caminho e método | uma função por rota |
+| converter JSON à mão | `res.json()` faz a conversão |
+| `res.statusCode = 404` | `res.status(404)` encadeável |
+| tudo num bloco só | cada rota no seu lugar |
+
+# 🏗️ Instalando e configurando
+
+O Express **não** vem com o Node — precisa ser instalado. E, como o programa precisa dele para funcionar, ele é uma **dependência normal** (aula 1):
+
+```bash
+npm install express
+```
+
+## 📌 Exemplo 1 — O menor servidor Express
+
+```jsx
+const express = require("express")
+
+const app = express()
+
+app.get("/", (req, res) => {
+    res.send("API no ar")
+})
+
+app.listen(3000, () => {
+    console.log("Servidor em http://localhost:3000")
+})
+```
+
+Compare com o Exemplo 4 da aula 2: mesmo resultado, sem nenhum `if`.
+
+| Linha | O que faz |
+| --- | --- |
+| `express()` | cria a aplicação; é o objeto central |
+| `app.get(caminho, fn)` | registra uma rota GET |
+| `res.send(texto)` | envia a resposta |
+| `app.listen(porta)` | põe o servidor no ar |
+
+📌 Juntando com a aula 2, a porta vem do ambiente:
+
+```jsx
+const porta = Number(process.env.PORT) || 3000
+
+app.listen(porta)
+```
+
+# 🧠 Rotas
+
+Uma **rota** é a combinação de um **método HTTP** com um **caminho**.
+
+```
+   GET      /produtos
+    ↑           ↑
+  método     caminho
+```
+
+Os métodos principais:
+
+| Método | Intenção | Exemplo |
+| --- | --- | --- |
+| `GET` | buscar dados | listar produtos |
+| `POST` | criar algo novo | cadastrar produto |
+| `PUT` | atualizar algo existente | mudar o preço |
+| `DELETE` | remover algo | excluir produto |
+
+No Express, cada método é um função do `app`:
+
+```jsx
 app.get("/produtos", ...)
 app.post("/produtos", ...)
-app.get("/clientes", ...)
-app.post("/clientes", ...)
-app.get("/pedidos", ...)
-// ... e continua
+app.put("/produtos", ...)
+app.delete("/produtos", ...)
 ```
 
-Os problemas são práticos:
+📌 O mesmo caminho `/produtos` pode ter **quatro rotas diferentes** — uma por método. Elas não se confundem.
 
-- achar uma rota exige rolar o arquivo inteiro;
-- duas pessoas mexendo em rotas diferentes dão conflito no mesmo arquivo;
-- o caminho `/produtos` é repetido em toda rota de produto.
+## 📌 Exemplo 2 — Respondendo em JSON
 
-É o mesmo tipo de problema que vimos no 3º bimestre com objetos literais repetidos: **funciona, mas não escala**.
+API séria não devolve texto solto, devolve **JSON**. O Express tem um método só para isso:
 
-# 🧩 O Router
+```jsx
+const produtos = [
+    { id: 1, nome: "Teclado", preco: 150 },
+    { id: 2, nome: "Mouse", preco: 80 }
+]
 
-O Express resolve isso com o **Router**: um "mini app" que guarda um conjunto de rotas e pode ser encaixado no app principal.
+app.get("/produtos", (req, res) => {
+    res.json(produtos)
+})
+```
+
+O `res.json()` faz três coisas de uma vez:
+
+1. converte o objeto para texto JSON (o `JSON.stringify` que fazíamos à mão);
+2. define o cabeçalho `Content-Type: application/json`;
+3. envia a resposta.
+
+| Aula 2 (`http` puro) | Agora (Express) |
+| --- | --- |
+| `res.setHeader("Content-Type", "application/json")` | — |
+| `res.end(JSON.stringify(produtos))` | `res.json(produtos)` |
+
+## 📌 Exemplo 3 — Definindo o status
+
+O `res.status()` define o código e **devolve o próprio `res`**, o que permite encadear:
+
+```jsx
+app.post("/produtos", (req, res) => {
+    res.status(201).json({ mensagem: "Produto criado" })
+})
+```
+
+Leitura: "status 201, e o corpo é este JSON".
+
+Os status que vamos usar neste bimestre:
+
+| Código | Nome | Quando usar |
+| --- | --- | --- |
+| 200 | OK | a busca deu certo |
+| 201 | Created | criou um registro novo |
+| 400 | Bad Request | o cliente mandou dado inválido |
+| 404 | Not Found | não existe o que foi pedido |
+| 500 | Internal Server Error | erro do servidor |
+
+📌 Quando você não chama `res.status()`, o Express assume **200**. Por isso o Exemplo 2 funciona sem status explícito.
+
+## 📌 Exemplo 4 — Várias rotas juntas
 
 ```jsx
 const express = require("express")
 
-const router = express.Router()
-```
-
-O `router` tem os mesmos métodos do `app`:
-
-```jsx
-router.get("/", ...)
-router.post("/", ...)
-```
-
-## 📌 Exemplo 1 — Um arquivo de rotas
-
-```jsx
-// routes/produtos.js
-const express = require("express")
-
-const router = express.Router()
+const app = express()
 
 const produtos = [
     { id: 1, nome: "Teclado", preco: 150 },
     { id: 2, nome: "Mouse", preco: 80 }
 ]
 
-router.get("/", (req, res) => {
+app.get("/", (req, res) => {
+    res.json({ mensagem: "API de Produtos" })
+})
+
+app.get("/produtos", (req, res) => {
     res.json(produtos)
 })
 
-router.get("/total", (req, res) => {
+app.get("/produtos/total", (req, res) => {
     res.json({ total: produtos.length })
 })
 
-router.post("/", (req, res) => {
+app.post("/produtos", (req, res) => {
     res.status(201).json({ mensagem: "Produto criado" })
 })
 
-module.exports = router
-```
-
-Repare: os caminhos são `"/"` e `"/total"` — **sem** o `/produtos`. Isso é o ponto central do Router.
-
-## 🔌 Conectando com `app.use()`
-
-O `app.use()` monta o router sob um **prefixo**:
-
-```jsx
-// index.js
-const express = require("express")
-const produtosRouter = require("./routes/produtos")
-
-const app = express()
-
-app.use("/produtos", produtosRouter)
-
 module.exports = app
 ```
 
-O prefixo é **somado** ao caminho de cada rota do router:
+Repare na última linha. Ela é o ponto mais importante da aula.
 
-| Prefixo no `app.use` | Caminho no router | Rota final |
-| --- | --- | --- |
-| `/produtos` | `/` | `/produtos` |
-| `/produtos` | `/total` | `/produtos/total` |
-| `/clientes` | `/` | `/clientes` |
-| `/clientes` | `/ativos` | `/clientes/ativos` |
+# 🧪 Separando o `app` do `listen`
 
-> **O router não sabe onde está montado.** Ele conhece só a parte final do caminho. Quem decide o prefixo é o `app.use()` — e por isso o mesmo router poderia ser montado em dois lugares diferentes.
+Igual ao que fizemos com o `handler` na aula 2: para poder **testar**, o módulo exporta o `app` e **não** chama o `listen`.
 
-## 📌 Exemplo 2 — Dois routers no mesmo app
-
-```jsx
-// routes/clientes.js
-const express = require("express")
-
-const router = express.Router()
-
-const clientes = [{ id: 1, nome: "Ana" }]
-
-router.get("/", (req, res) => {
-    res.json(clientes)
-})
-
-module.exports = router
-```
-
-```jsx
-// index.js
-const express = require("express")
-const produtosRouter = require("./routes/produtos")
-const clientesRouter = require("./routes/clientes")
-
-const app = express()
-
-app.use("/produtos", produtosRouter)
-app.use("/clientes", clientesRouter)
-
-module.exports = app
-```
-
-Estrutura de pastas:
+A estrutura padrão usa dois arquivos:
 
 ```text
-projeto/
-├── index.js              ← cria o app e monta os routers
-├── servidor.js           ← chama o listen
-├── package.json
-└── routes/
-    ├── produtos.js       ← rotas de produto
-    └── clientes.js       ← rotas de cliente
+index.js      ← cria o app, declara as rotas, exporta o app
+servidor.js   ← importa o app e chama o listen
 ```
-
-📌 A convenção é **um arquivo por recurso**, com o nome do recurso no plural. Quem procura a rota de cliente sabe exatamente onde olhar.
-
-# 🏗️ O Router Main
-
-Com dois routers, o `index.js` do Exemplo 2 está bom. Com dez, ele volta a ser uma lista comprida de `require` e `app.use`.
-
-A solução é um **router principal** (*router main*): um router que monta todos os outros, e que o app monta de uma vez só.
-
-## 📌 Exemplo 3 — Criando o router principal
-
-```jsx
-// routes/index.js
-const express = require("express")
-const produtosRouter = require("./produtos")
-const clientesRouter = require("./clientes")
-
-const router = express.Router()
-
-router.get("/", (req, res) => {
-    res.json({ mensagem: "API da Loja" })
-})
-
-router.use("/produtos", produtosRouter)
-router.use("/clientes", clientesRouter)
-
-module.exports = router
-```
-
-Duas coisas novas:
-
-- o router usa **`router.use()`** para montar outros routers — exatamente como o app faz;
-- o caminho do `require` é `"./produtos"`, sem o `routes/`, porque o arquivo **já está** dentro de `routes/`.
 
 ```jsx
 // index.js
 const express = require("express")
-const rotas = require("./routes")
-
 const app = express()
 
-app.use("/", rotas)
+app.get("/", (req, res) => {
+    res.json({ mensagem: "API de Produtos" })
+})
 
 module.exports = app
 ```
 
-📌 `require("./routes")` carrega automaticamente o `routes/index.js`. É a mesma convenção do `require("./index")`.
+```jsx
+// servidor.js
+const app = require("./index")
 
-## 🗺️ Como o caminho é montado
+const porta = Number(process.env.PORT) || 3000
 
-Os prefixos se **acumulam** em cada nível:
-
-```
-app.use("/",              rotas)            →  /
-    router.use("/produtos", produtosRouter) →  /produtos
-        router.get("/total", ...)           →  /produtos/total
-```
-
-Então, pedir `GET /produtos/total`:
-
-```
-1. o app recebe o pedido e passa para o router principal (prefixo "/")
-2. o router principal vê que começa com /produtos e passa para o produtosRouter
-3. o produtosRouter procura a rota "/total" e responde
+app.listen(porta, () => {
+    console.log(`Servidor na porta ${porta}`)
+})
 ```
 
-## 📌 Exemplo 4 — Com prefixo de versão
+E o `package.json`:
 
-Uma vantagem prática: trocar o prefixo de toda a API numa linha.
+```json
+{
+  "scripts": {
+    "test": "jest",
+    "start": "node servidor.js",
+    "dev": "node --watch --env-file=.env servidor.js"
+  }
+}
+```
+
+> **Por quê?** Porque o teste precisa do `app`, mas **não** quer que uma porta seja ocupada. Se o `index.js` chamasse `listen`, todo teste subiria um servidor de verdade — e dois testes rodando ao mesmo tempo brigariam pela mesma porta.
+
+## 🔬 Testando com supertest
+
+O **supertest** é o pacote que faz requisições contra o `app` **sem abrir porta nenhuma**. Ele é ferramenta de desenvolvimento, então entra como `devDependency` (aula 1):
+
+```bash
+npm install supertest --save-dev
+```
+
+## 📌 Exemplo 5 — Um teste de rota
 
 ```jsx
-app.use("/api", rotas)
+const request = require("supertest")
+const app = require("../index")
+
+test("GET /produtos deve responder 200 com a lista", async () => {
+    const res = await request(app).get("/produtos")
+
+    expect(res.status).toBe(200)
+    expect(res.body.length).toBe(2)
+})
+
+test("POST /produtos deve responder 201", async () => {
+    const res = await request(app).post("/produtos")
+
+    expect(res.status).toBe(201)
+})
 ```
 
-Agora todas as rotas viram `/api/produtos`, `/api/produtos/total`, `/api/clientes`. Nenhum arquivo de rota foi alterado.
-
-É assim que APIs fazem versionamento:
-
-```jsx
-app.use("/api/v1", rotasV1)
-app.use("/api/v2", rotasV2)
-```
-
-# 🧠 Resumindo a arquitetura
-
-| Arquivo | Responsabilidade |
+| Parte | O que é |
 | --- | --- |
-| `servidor.js` | só chama o `listen` |
-| `index.js` | cria o `app` e monta o router principal |
-| `routes/index.js` | monta todos os routers de recurso |
-| `routes/produtos.js` | só as rotas de produto |
-| `routes/clientes.js` | só as rotas de cliente |
+| `request(app)` | prepara uma requisição contra o seu app |
+| `.get("/produtos")` | o método e o caminho |
+| `await` | a requisição é assíncrona — sempre espere |
+| `res.status` | o status que a rota respondeu |
+| `res.body` | o corpo já convertido de JSON para objeto |
 
-Cada arquivo tem **um** motivo para ser alterado. Mexer nas rotas de cliente não encosta em nenhum outro arquivo.
+📌 Note o `async` na função do teste e o `await` na requisição. Sem eles, o teste termina antes da resposta chegar e passa sem testar nada.
 
 # 📖 Conceitos importantes
 
 | Conceito | Significado |
 | --- | --- |
-| `express.Router()` | cria um conjunto de rotas independente |
-| `app.use(prefixo, router)` | monta um router sob um prefixo |
-| `router.use(prefixo, outro)` | monta um router dentro de outro |
-| `routes/` | pasta com um arquivo por recurso |
-| Router main | router que agrupa todos os outros |
-| Prefixo | parte do caminho definida no `use`, não no router |
+| Express | pacote que organiza rotas sobre o módulo `http` |
+| `app` | a aplicação Express |
+| Rota | combinação de método HTTP + caminho |
+| `app.get/post/put/delete` | registra uma rota do método correspondente |
+| `res.send()` | envia texto |
+| `res.json()` | envia JSON e define o Content-Type |
+| `res.status(n)` | define o status; pode ser encadeado |
+| `app.listen()` | põe o servidor no ar |
+| supertest | faz requisições ao `app` sem abrir porta |
 
 # ⚠️ Erros comuns
 
-### ❌ Repetir o prefixo dentro do router
+### ❌ Chamar `app.listen()` no arquivo que é exportado
 
 ```jsx
-// routes/produtos.js
-router.get("/produtos", ...)
-```
-
-```jsx
-app.use("/produtos", produtosRouter)
-```
-
-A rota final vira `/produtos/produtos`. Correto:
-
-```jsx
-router.get("/", ...)
-```
-
-### ❌ Esquecer de exportar o router
-
-```jsx
-const router = express.Router()
-router.get("/", ...)
-// falta module.exports
-```
-
-O `require` devolve `{}` e o `app.use()` quebra. Sempre termine com:
-
-```jsx
-module.exports = router
-```
-
-### ❌ Exportar o app em vez do router
-
-```jsx
-// routes/produtos.js
-const app = express()
+app.listen(3000)
 module.exports = app
 ```
 
-Dentro de `routes/` é sempre `express.Router()`, nunca `express()`.
+O teste sobe um servidor de verdade e a porta pode ficar presa. Deixe o `listen` em outro arquivo.
 
-### ❌ Usar `app.use` dentro de um arquivo de rota
-
-Dentro de um router é `router.use()`. O `app` existe em um lugar só: o `index.js`.
-
-### ❌ Errar o caminho do require
+### ❌ Esquecer de responder
 
 ```jsx
-// dentro de routes/index.js
-const produtosRouter = require("./routes/produtos")   // ❌
-const produtosRouter = require("./produtos")          // ✅
+app.get("/produtos", (req, res) => {
+    const lista = produtos
+})
 ```
 
-O caminho é sempre relativo ao arquivo **onde o `require` está escrito**.
+A rota existe mas nunca responde — a requisição fica pendurada. Toda rota precisa de um `res.json()`, `res.send()` ou equivalente.
+
+### ❌ Responder duas vezes
+
+```jsx
+res.json(produtos)
+res.status(404).json({ erro: "..." })
+```
+
+Erro `Cannot set headers after they are sent`. Use `return` antes do segundo caso.
+
+### ❌ Trocar a ordem do `status` com o `json`
+
+```jsx
+res.json({ ok: true }).status(201)
+```
+
+O `json()` já envia a resposta — o `status` depois dele não tem efeito. Correto:
+
+```jsx
+res.status(201).json({ ok: true })
+```
+
+### ❌ Esquecer o `await` no teste
+
+```jsx
+test("...", () => {
+    const res = request(app).get("/produtos")   // sem await
+    expect(res.status).toBe(200)                 // undefined
+})
+```
 
 Fim da aula!
 
@@ -316,39 +343,30 @@ _
 
 # 🧩 Exercício Rápido
 
-### 💬 API de Escola com routers separados
+### 💬 API de Livros
 
-Nesta aula você vai criar **três** arquivos.
-
-**1. `routes/alunos.js`** — um `express.Router()` com um array de dois alunos:
+Crie um arquivo chamado `index.js` com uma aplicação Express que tenha um array de livros com **dois** livros:
 
 ```jsx
-{ id: 1, nome: "Ana", nota: 8 }
-{ id: 2, nome: "Bruno", nota: 6 }
+{ id: 1, titulo: "Dom Casmurro", autor: "Machado de Assis" }
+{ id: 2, titulo: "O Cortico", autor: "Aluisio Azevedo" }
 ```
 
-E duas rotas:
+E estas quatro rotas:
 
-| Método | Caminho no router | Status | Resposta |
+| Método | Caminho | Status | Resposta |
 | --- | --- | --- | --- |
-| GET | `/` | 200 | o array completo de alunos |
-| GET | `/aprovados` | 200 | só os alunos com `nota` maior ou igual a 7 |
+| GET | `/` | 200 | o JSON `{ "mensagem": "API de Livros" }` |
+| GET | `/livros` | 200 | o array completo de livros |
+| GET | `/livros/total` | 200 | o JSON `{ "total": <quantidade de livros> }` |
+| POST | `/livros` | 201 | o JSON `{ "mensagem": "Livro criado" }` |
 
-**2. `routes/index.js`** — o router principal, que deve:
+Regras:
 
-- responder `GET /` com o JSON `{ "mensagem": "API da Escola" }`
-- montar o router de alunos sob o prefixo `/alunos` com `router.use(...)`
+- use `res.json(...)` em todas as rotas;
+- use `res.status(...)` apenas onde o status **não** é 200;
+- o `total` deve ser calculado a partir do array (`.length`), não escrito à mão.
 
-**3. `index.js`** — a aplicação, que deve criar o `app` e montar o router principal sob o prefixo `/api` com `app.use(...)`.
+No final, exporte a aplicação com `module.exports = app`.
 
-As rotas finais devem ficar assim:
-
-```
-GET /api
-GET /api/alunos
-GET /api/alunos/aprovados
-```
-
-Exporte com `module.exports` em todos os três arquivos (o `router` nos dois de `routes/` e o `app` no `index.js`).
-
-📌 **Não** chame `app.listen()` e **não** escreva `/alunos` dentro de `routes/alunos.js` — o prefixo é responsabilidade de quem monta.
+📌 **Não** chame `app.listen()` no `index.js`.
