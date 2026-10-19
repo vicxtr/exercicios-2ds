@@ -234,5 +234,7 @@ Deixe a página aberta no seu computador. Visite os colegas ao lado e dê nota n
 
 **3. Responda**
 
-- Quantas respostas e qual o NPS?
+- Quantas respostas e qual o NPS? 
+Recebi 14 respostas dos colegas e o NPS final do meu aplicativo foi -29. Esse resultado indica que houve mais detratores do que promotores, mostrando que o aplicativo precisa de melhorias para aumentar a satisfação dos usuários.
 - Complete: *"Se este NPS cair, eu vou ______."*
+Se este NPS cair, eu vou analisar as opiniões dos usuários, identificar os principais problemas do aplicativo e implementar melhorias para tornar a experiência melhor e aumentar a satisfação dos usuários.
