@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f1e9">
+  <title>Agenda de Estudos | Funil AARRR</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4f1e9;
+      --ink: #222820;
+      --muted: #657064;
+      --line: #d9d8ce;
+      --green: #315b43;
+      --green-dark: #244431;
+      --lime: #dcebb9;
+      --red: #b64035;
+      --red-pale: #f8e7e1;
+      --white: #fffefa;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 20px;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 88% 4%, rgba(220, 235, 185, .7), transparent 30rem),
+        repeating-linear-gradient(0deg, transparent 0 31px, rgba(49, 91, 67, .035) 31px 32px),
+        var(--paper);
+      font-family: "Trebuchet MS", sans-serif;
+    }
+
+    main { width: min(100%, 860px); margin: 0 auto; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--green);
+      font-size: .76rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before { width: 22px; height: 2px; background: var(--red); content: ""; }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: clamp(2.5rem, 8vw, 4.4rem);
+      font-weight: 400;
+      line-height: 1.02;
+    }
+
+    .intro {
+      max-width: 640px;
+      margin: 15px 0 28px;
+      color: var(--muted);
+      font-size: 1.03rem;
+      line-height: 1.65;
+    }
+
+    .funnel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--green);
+      background: rgba(255, 254, 250, .94);
+    }
+
+    .funnel-heading, .stage {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.25fr) minmax(150px, 1fr) minmax(120px, .8fr) minmax(185px, 1.2fr);
+      align-items: center;
+      column-gap: 18px;
+      padding: 14px 22px;
+    }
+
+    .funnel-heading {
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .stage { min-height: 94px; border-top: 1px solid var(--line); }
+
+    .stage-name { display: flex; align-items: center; gap: 12px; }
+
+    .stage-number {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      place-items: center;
+      background: var(--lime);
+      color: var(--green-dark);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .stage-name strong { display: block; font-family: Georgia, serif; font-size: 1.15rem; font-weight: 400; }
+    .stage-name small { display: block; margin-top: 3px; color: var(--muted); font-size: .75rem; }
+    .count { font-family: Georgia, serif; font-size: 1.7rem; }
+    .conversion { color: var(--green-dark); font-variant-numeric: tabular-nums; }
+    .conversion small { display: block; margin-top: 3px; color: var(--muted); font-size: .72rem; }
+
+    .stage-action { display: flex; justify-content: flex-start; }
+
+    .action-button {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--green);
+      background: transparent;
+      color: var(--green-dark);
+      cursor: pointer;
+      font: inherit;
+      font-size: .87rem;
+      font-weight: 700;
+    }
+
+    .action-button:hover:not(:disabled) { background: var(--green); color: white; }
+    .action-button:focus-visible, .reset-button:focus-visible, .rating input:focus-visible + label { outline: 3px solid var(--red); outline-offset: 3px; }
+    .action-button:disabled { border-color: var(--line); color: #8b9087; cursor: not-allowed; }
+
+    .rating-form { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+    .rating { position: relative; }
+    .rating input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .rating label { display: grid; width: 30px; height: 36px; place-items: center; border: 1px solid var(--line); cursor: pointer; font-size: .82rem; }
+    .rating input:checked + label { border-color: var(--green); background: var(--green); color: white; }
+    .rating-form .action-button { margin-left: 6px; }
+
+    .stage.is-largest-drop { background: var(--red-pale); box-shadow: inset 4px 0 var(--red); }
+    .stage.is-largest-drop .stage-number { background: var(--red); color: white; }
+    .stage.is-largest-drop .conversion, .stage.is-largest-drop .conversion small { color: var(--red); }
+    .drop-label { display: none; margin-top: 4px; color: var(--red); font-size: .7rem; font-weight: 700; }
+    .stage.is-largest-drop .drop-label { display: block; }
+
+    .status {
+      min-height: 1.3em;
+      margin: 14px 0 0;
+      color: var(--green-dark);
+      font-size: .88rem;
+    }
+
+    .bottom-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
+    .note { margin: 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+    .reset-button { padding: 7px 0; border: 0; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-size: .82rem; text-decoration: underline; text-underline-offset: 3px; }
+
+    @media (max-width: 700px) {
+      body { padding: 24px 14px; }
+      .funnel-heading { display: none; }
+      .stage { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 16px; }
+      .stage-name { grid-column: 1; }
+      .stage .count { grid-column: 2; grid-row: 1; text-align: right; }
+      .stage .conversion { grid-column: 1; padding-left: 46px; }
+      .stage-action { grid-column: 2; grid-row: 2; justify-content: flex-end; }
+      .rating-form { max-width: 200px; justify-content: flex-end; }
+      .rating-form .action-button { margin: 5px 0 0; }
+      .bottom-row { align-items: flex-start; }
+    }
+
+    @media (max-width: 420px) {
+      .stage { grid-template-columns: minmax(0, 1fr); }
+      .stage-name, .stage .count, .stage .conversion, .stage-action { grid-column: 1; grid-row: auto; }
+      .stage .count { padding-left: 46px; text-align: left; }
+      .stage-action { justify-content: flex-start; padding-left: 46px; }
+      .rating-form { justify-content: flex-start; }
+      .bottom-row { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">Métricas de crescimento · Funil AARRR</p>
+    <h1>Agenda de Estudos</h1>
+    <p class="intro">Organize matérias e tarefas em um só lugar. Experimente o app e avance pelo funil conforme seu interesse.</p>
+
+    <section class="funnel" aria-label="Etapas do funil AARRR">
+      <div class="funnel-heading" aria-hidden="true">
+        <span>Etapa</span><span>Pessoas</span><span>Conversão</span><span>Ação</span>
+      </div>
+
+      <div class="stage" id="stage-acquisition">
+        <div class="stage-name"><span class="stage-number">A</span><span><strong>Aquisição</strong><small>Abriu a página</small></span></div>
+        <span class="count" id="count-acquisition">0</span>
+        <span class="conversion">Início<small>Primeira etapa</small></span>
+        <div class="stage-action"><span class="note">Visita registrada nesta abertura</span></div>
+      </div>
+
+      <div class="stage" id="stage-activation">
+        <div class="stage-name"><span class="stage-number">A</span><span><strong>Ativação</strong><small>Experimentou o app</small></span></div>
+        <span class="count" id="count-activation">0</span>
+        <span class="conversion" id="conversion-activation">—<small>da aquisição</small></span>
+        <div class="stage-action"><button class="action-button" id="activate-button" type="button">Experimentar</button></div>
+      </div>
+
+      <div class="stage" id="stage-retention">
+        <div class="stage-name"><span class="stage-number">R</span><span><strong>Retenção</strong><small>Voltaria a usar</small></span></div>
+        <span class="count" id="count-retention">0</span>
+        <span class="conversion" id="conversion-retention">—<small>da ativação</small></span>
+        <div class="stage-action"><button class="action-button" id="retain-button" type="button" disabled>Quero usar de novo</button></div>
+      </div>
+
+      <div class="stage" id="stage-revenue">
+        <div class="stage-name"><span class="stage-number">R</span><span><strong>Receita</strong><small>Considerou pagar</small></span></div>
+        <span class="count" id="count-revenue">0</span>
+        <span class="conversion" id="conversion-revenue">—<small>da retenção</small></span>
+        <div class="stage-action"><button class="action-button" id="revenue-button" type="button" disabled>Eu pagaria por isso</button></div>
+      </div>
+
+      <div class="stage" id="stage-recommendation">
+        <div class="stage-name"><span class="stage-number">R</span><span><strong>Recomendação</strong><small>Nota 9 ou 10 no NPS</small></span></div>
+        <span class="count" id="count-recommendation">0</span>
+        <span class="conversion" id="conversion-recommendation">—<small>da receita</small></span>
+        <div class="stage-action">
+          <form class="rating-form" id="rating-form">
+            <div class="rating"><input id="rating-0" type="radio" name="rating" value="0" required><label for="rating-0">0</label></div>
+            <div class="rating"><input id="rating-1" type="radio" name="rating" value="1"><label for="rating-1">1</label></div>
+            <div class="rating"><input id="rating-2" type="radio" name="rating" value="2"><label for="rating-2">2</label></div>
+            <div class="rating"><input id="rating-3" type="radio" name="rating" value="3"><label for="rating-3">3</label></div>
+            <div class="rating"><input id="rating-4" type="radio" name="rating" value="4"><label for="rating-4">4</label></div>
+            <div class="rating"><input id="rating-5" type="radio" name="rating" value="5"><label for="rating-5">5</label></div>
+            <div class="rating"><input id="rating-6" type="radio" name="rating" value="6"><label for="rating-6">6</label></div>
+            <div class="rating"><input id="rating-7" type="radio" name="rating" value="7"><label for="rating-7">7</label></div>
+            <div class="rating"><input id="rating-8" type="radio" name="rating" value="8"><label for="rating-8">8</label></div>
+            <div class="rating"><input id="rating-9" type="radio" name="rating" value="9"><label for="rating-9">9</label></div>
+            <div class="rating"><input id="rating-10" type="radio" name="rating" value="10"><label for="rating-10">10</label></div>
+            <button class="action-button" id="recommend-button" type="submit" disabled>Enviar nota</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+    <div class="bottom-row">
+      <p class="note">As métricas ficam salvas neste navegador. Cada nova abertura da página inicia uma visita.</p>
+      <button class="reset-button" id="reset-button" type="button">Limpar métricas</button>
+    </div>
+  </main>
+
+  <script>
+    const storageKey = "agenda-estudos-aarrr";
+    const stageKeys = ["acquisition", "activation", "retention", "revenue", "recommendation"];
+    const stageLabels = ["Aquisição", "Ativação", "Retenção", "Receita", "Recomendação"];
+    const defaultCounts = { acquisition: 0, activation: 0, retention: 0, revenue: 0, recommendation: 0 };
+
+    function loadCounts() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+        return Object.fromEntries(stageKeys.map((key) => [
+          key,
+          Number.isInteger(saved[key]) && saved[key] >= 0 ? saved[key] : 0
+        ]));
+      } catch {
+        return { ...defaultCounts };
+      }
+    }
+
+    let counts = loadCounts();
+    const journey = { activation: false, retention: false, revenue: false, recommendation: false };
+    const status = document.querySelector("#status");
+    const ratingForm = document.querySelector("#rating-form");
+    const activateButton = document.querySelector("#activate-button");
+    const retainButton = document.querySelector("#retain-button");
+    const revenueButton = document.querySelector("#revenue-button");
+    const recommendButton = document.querySelector("#recommend-button");
+
+    function saveCounts() {
+      localStorage.setItem(storageKey, JSON.stringify(counts));
+    }
+
+    function renderFunnel() {
+      const largestDropIndex = stageKeys.slice(1).reduce((largestIndex, key, index) => {
+        const previous = counts[stageKeys[index]];
+        const current = counts[key];
+        if (previous === 0) return largestIndex;
+        const drop = (previous - current) / previous;
+        return largestIndex === -1 || drop > largestIndex.drop
+          ? { index: index + 1, drop }
+          : largestIndex;
+      }, -1);
+
+      stageKeys.forEach((key, index) => {
+        document.querySelector(`#count-${key}`).textContent = counts[key];
+        const stage = document.querySelector(`#stage-${key}`);
+        stage.classList.toggle("is-largest-drop", largestDropIndex !== -1 && largestDropIndex.index === index);
+
+        if (index > 0) {
+          const previous = counts[stageKeys[index - 1]];
+          const conversion = previous === 0 ? null : (counts[key] / previous) * 100;
+          const conversionElement = document.querySelector(`#conversion-${key}`);
+          conversionElement.firstChild.textContent = conversion === null ? "—" : `${conversion.toFixed(1)}%`;
+          conversionElement.querySelector("small").textContent = `da ${stageLabels[index - 1].toLowerCase()}`;
+          const dropLabel = stage.querySelector(".drop-label");
+          if (largestDropIndex !== -1 && largestDropIndex.index === index) {
+            if (!dropLabel) {
+              const label = document.createElement("span");
+              label.className = "drop-label";
+              label.textContent = "Maior queda";
+              conversionElement.append(label);
+            }
+          } else if (dropLabel) {
+            dropLabel.remove();
+          }
+        }
+      });
+
+      retainButton.disabled = !journey.activation || journey.retention;
+      revenueButton.disabled = !journey.retention || journey.revenue;
+      ratingForm.querySelectorAll('input[name="rating"]').forEach((input) => {
+        input.disabled = !journey.revenue || journey.recommendation;
+      });
+      recommendButton.disabled = !journey.revenue || journey.recommendation;
+      activateButton.disabled = journey.activation;
+    }
+
+    function advance(key) {
+      if (journey[key]) return;
+      journey[key] = true;
+      counts[key] += 1;
+      saveCounts();
+      renderFunnel();
+    }
+
+    counts.acquisition += 1;
+    saveCounts();
+
+    activateButton.addEventListener("click", () => {
+      advance("activation");
+      status.textContent = "Ativação registrada. Você experimentou a Agenda de Estudos.";
+    });
+
+    retainButton.addEventListener("click", () => {
+      advance("retention");
+      status.textContent = "Retenção registrada. Obrigado por voltar!";
+    });
+
+    revenueButton.addEventListener("click", () => {
+      advance("revenue");
+      status.textContent = "Interesse em pagar registrado. Agora avalie se recomendaria o app.";
+    });
+
+    ratingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const selected = ratingForm.querySelector('input[name="rating"]:checked');
+      if (!selected || !journey.revenue || journey.recommendation) return;
+
+      const score = Number(selected.value);
+      if (score >= 9) {
+        advance("recommendation");
+        status.textContent = "Recomendação registrada. Obrigado pela nota!";
+      } else {
+        journey.recommendation = true;
+        renderFunnel();
+        status.textContent = "Nota registrada. Esta etapa conta como recomendação apenas com nota 9 ou 10.";
+      }
+    });
+
+    document.querySelector("#reset-button").addEventListener("click", () => {
+      if (!window.confirm("Limpar todas as métricas salvas neste navegador?")) return;
+      counts = { ...defaultCounts, acquisition: 1 };
+      Object.keys(journey).forEach((key) => { journey[key] = false; });
+      saveCounts();
+      status.textContent = "Métricas limpas. A visita atual continua registrada.";
+      renderFunnel();
+    });
+
+    renderFunnel();
+  </script>
+</body>
+</html>
