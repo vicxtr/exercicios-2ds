@@ -1,11 +1,11 @@
 info:
-  name: ID inexistente
+  name: buscar sessao
   type: http
   seq: 1
 
 http:
   method: GET
-  url: http://localhost:3000/sessoes/99
+  url: http://localhost:3000/sessoes
   auth: inherit
 
 settings:
