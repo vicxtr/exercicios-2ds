@@ -1,8 +1,8 @@
 {
   "name": "projeto8-vicxtr",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Sistema de gerenciamento de ordens da lavanderia",
+  "main": "repositorio.js",
   "scripts": {
     "test": "jest"
   },
