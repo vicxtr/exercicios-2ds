@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<<<<<<< HEAD
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f4f1e9">
@@ -381,3 +382,417 @@
   </script>
 </body>
 </html>
+=======
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Avalie a Livraria</title>
+	<style>
+		:root {
+			color-scheme: light;
+			font-family: Georgia, "Times New Roman", serif;
+			color: #26352d;
+			background: #f5f3ec;
+			font-synthesis: none;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			min-height: 100vh;
+			margin: 0;
+			background:
+				linear-gradient(90deg, transparent 49.9%, rgba(63, 91, 70, 0.06) 50%, transparent 50.1%),
+				#f5f3ec;
+		}
+
+		main {
+			width: min(100% - 32px, 760px);
+			margin: 0 auto;
+			padding: 52px 0 64px;
+		}
+
+		.eyebrow {
+			margin: 0 0 12px;
+			color: #a24d32;
+			font: 700 0.78rem/1.2 Arial, sans-serif;
+			letter-spacing: 0.12em;
+			text-transform: uppercase;
+		}
+
+		h1 {
+			margin: 0;
+			font-size: clamp(2.5rem, 8vw, 4.5rem);
+			font-weight: 400;
+			line-height: 1;
+		}
+
+		.intro {
+			max-width: 570px;
+			margin: 20px 0 40px;
+			color: #536158;
+			font-size: 1.15rem;
+			line-height: 1.6;
+		}
+
+		form { border-top: 1px solid #c9cec4; padding-top: 28px; }
+
+		fieldset { margin: 0; padding: 0; border: 0; }
+
+		legend {
+			margin-bottom: 18px;
+			font-size: 1.35rem;
+			font-weight: 700;
+			line-height: 1.35;
+		}
+
+		.rating-scale {
+			display: grid;
+			grid-template-columns: repeat(11, minmax(0, 1fr));
+			gap: 8px;
+		}
+
+		.rating-option { position: relative; }
+
+		.rating-option input {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			opacity: 0;
+		}
+
+		.rating-option label {
+			display: grid;
+			min-height: 48px;
+			place-items: center;
+			border: 1px solid #aab4aa;
+			border-radius: 4px;
+			background: #fffefa;
+			font: 700 1rem Arial, sans-serif;
+			cursor: pointer;
+			transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+		}
+
+		.rating-option input:checked + label {
+			border-color: #31583e;
+			background: #31583e;
+			color: white;
+		}
+
+		.rating-option input:focus-visible + label {
+			outline: 3px solid #d07a50;
+			outline-offset: 3px;
+		}
+
+		.scale-labels {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 9px;
+			color: #68736b;
+			font: 0.82rem Arial, sans-serif;
+		}
+
+		.submit-row {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			margin-top: 24px;
+		}
+
+		button {
+			min-height: 46px;
+			padding: 0 20px;
+			border: 0;
+			border-radius: 4px;
+			background: #a24d32;
+			color: white;
+			font: 700 0.95rem Arial, sans-serif;
+			cursor: pointer;
+		}
+
+		button:hover { background: #873d29; }
+
+		#feedback {
+			margin: 0;
+			color: #31583e;
+			font: 0.9rem Arial, sans-serif;
+		}
+
+		.results {
+			margin-top: 52px;
+			padding-top: 26px;
+			border-top: 1px solid #c9cec4;
+		}
+
+		.results h2 {
+			margin: 0 0 20px;
+			font-size: 1.65rem;
+			font-weight: 400;
+		}
+
+		.summary {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			border: 1px solid #c9cec4;
+			background: #fffefa;
+		}
+
+		.metric { min-width: 0; padding: 18px 16px; }
+		.metric + .metric { border-left: 1px solid #c9cec4; }
+
+		.metric-label {
+			display: block;
+			min-height: 2.4em;
+			color: #68736b;
+			font: 0.83rem/1.2 Arial, sans-serif;
+		}
+
+		.metric-value { display: block; margin-top: 8px; font-size: 2rem; }
+		.metric:last-child .metric-value { color: #a24d32; }
+
+		.response-count {
+			margin: 14px 0 0;
+			color: #68736b;
+			font: 0.85rem Arial, sans-serif;
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			margin: 0 0 40px;
+		}
+
+		.actions button { background: #31583e; }
+		.actions button:hover { background: #244530; }
+
+		.funnel-summary { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+		.funnel-summary .metric:last-child .metric-value { color: inherit; }
+
+		.funnel-conversion {
+			display: block;
+			margin-top: 10px;
+			color: #68736b;
+			font: 0.76rem/1.35 Arial, sans-serif;
+		}
+
+		.funnel-stage.is-largest-drop {
+			background: #fff0ed;
+			box-shadow: inset 0 0 0 2px #b83b32;
+			color: #9d2f28;
+		}
+
+		.funnel-stage.is-largest-drop .metric-label,
+		.funnel-stage.is-largest-drop .funnel-conversion { color: #9d2f28; }
+
+		.drop-note {
+			margin: 14px 0 0;
+			color: #9d2f28;
+			font: 700 0.85rem Arial, sans-serif;
+		}
+
+		@media (max-width: 560px) {
+			main { padding-top: 36px; }
+			.rating-scale { gap: 4px; }
+			.rating-option label { min-height: 42px; font-size: 0.9rem; }
+			.summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+			.metric:nth-child(3) { border-left: 0; border-top: 1px solid #c9cec4; }
+			.metric:nth-child(4) { border-top: 1px solid #c9cec4; }
+			.funnel-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+			.funnel-summary .metric:nth-child(odd) { border-left: 0; }
+			.funnel-summary .metric:nth-child(5) { border-top: 1px solid #c9cec4; }
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			*, *::before, *::after { transition-duration: 0.01ms !important; }
+		}
+	</style>
+</head>
+<body>
+	<main>
+		<p class="eyebrow">Pesquisa de satisfação</p>
+		<h1>Livraria</h1>
+		<p class="intro">A Livraria é o app que reúne seus livros favoritos e ajuda você a descobrir sua próxima leitura.</p>
+		<div class="actions" aria-label="Ações do app">
+			<button type="button" data-funnel-stage="activation">Experimentar</button>
+			<button type="button" data-funnel-stage="retention">Quero usar de novo</button>
+			<button type="button" data-funnel-stage="revenue">Eu pagaria por isso</button>
+		</div>
+
+		<form id="survey-form">
+			<fieldset>
+				<legend>De 0 a 10, quanto você recomendaria este app para um amigo?</legend>
+				<div class="rating-scale" id="rating-scale" aria-label="Escolha uma nota de 0 a 10"></div>
+				<div class="scale-labels" aria-hidden="true">
+					<span>De jeito nenhum</span>
+					<span>Com certeza</span>
+				</div>
+			</fieldset>
+			<div class="submit-row">
+				<button type="submit">Enviar resposta</button>
+				<p id="feedback" role="status" aria-live="polite"></p>
+			</div>
+		</form>
+
+		<section class="results" aria-labelledby="results-title">
+			<h2 id="results-title">Resultado da pesquisa</h2>
+			<div class="summary" aria-live="polite">
+				<div class="metric"><span class="metric-label">Promotores</span><strong class="metric-value" id="promoters">0</strong></div>
+				<div class="metric"><span class="metric-label">Neutros</span><strong class="metric-value" id="passives">0</strong></div>
+				<div class="metric"><span class="metric-label">Detratores</span><strong class="metric-value" id="detractors">0</strong></div>
+				<div class="metric"><span class="metric-label">NPS final</span><strong class="metric-value" id="nps">—</strong></div>
+			</div>
+			<p class="response-count" id="response-count">Nenhuma resposta registrada.</p>
+		</section>
+
+		<section class="results" aria-labelledby="funnel-title">
+			<h2 id="funnel-title">Funil AARRR</h2>
+			<div class="summary funnel-summary" aria-live="polite">
+				<div class="metric funnel-stage" data-stage="acquisition">
+					<span class="metric-label">Aquisição</span><strong class="metric-value" id="acquisition-count">0</strong>
+					<span class="funnel-conversion" id="acquisition-conversion">Etapa inicial</span>
+				</div>
+				<div class="metric funnel-stage" data-stage="activation">
+					<span class="metric-label">Ativação</span><strong class="metric-value" id="activation-count">0</strong>
+					<span class="funnel-conversion" id="activation-conversion">Sem dados</span>
+				</div>
+				<div class="metric funnel-stage" data-stage="retention">
+					<span class="metric-label">Retenção</span><strong class="metric-value" id="retention-count">0</strong>
+					<span class="funnel-conversion" id="retention-conversion">Sem dados</span>
+				</div>
+				<div class="metric funnel-stage" data-stage="revenue">
+					<span class="metric-label">Receita</span><strong class="metric-value" id="revenue-count">0</strong>
+					<span class="funnel-conversion" id="revenue-conversion">Sem dados</span>
+				</div>
+				<div class="metric funnel-stage" data-stage="recommendation">
+					<span class="metric-label">Recomendação</span><strong class="metric-value" id="recommendation-count">0</strong>
+					<span class="funnel-conversion" id="recommendation-conversion">Sem dados</span>
+				</div>
+			</div>
+			<p class="drop-note" id="largest-drop" hidden></p>
+		</section>
+	</main>
+
+	<script>
+		const STORAGE_KEY = "livraria-nps-respostas";
+		const FUNNEL_STORAGE_KEY = "livraria-aarrr-funil";
+		const funnelStages = ["acquisition", "activation", "retention", "revenue", "recommendation"];
+		const funnelStageLabels = {
+			acquisition: "Aquisição",
+			activation: "Ativação",
+			retention: "Retenção",
+			revenue: "Receita",
+			recommendation: "Recomendação"
+		};
+		const ratingScale = document.querySelector("#rating-scale");
+		const form = document.querySelector("#survey-form");
+		const feedback = document.querySelector("#feedback");
+
+		for (let score = 0; score <= 10; score += 1) {
+			const option = document.createElement("div");
+			option.className = "rating-option";
+			option.innerHTML = `<input id="score-${score}" type="radio" name="score" value="${score}" required><label for="score-${score}">${score}</label>`;
+			ratingScale.append(option);
+		}
+
+		function getResponses() {
+			try {
+				const responses = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+				return Array.isArray(responses) ? responses.filter(score => Number.isInteger(score) && score >= 0 && score <= 10) : [];
+			} catch {
+				return [];
+			}
+		}
+
+		function updateResults() {
+			const responses = getResponses();
+			const promoters = responses.filter(score => score >= 9).length;
+			const passives = responses.filter(score => score >= 7 && score <= 8).length;
+			const detractors = responses.filter(score => score <= 6).length;
+			const total = responses.length;
+
+			document.querySelector("#promoters").textContent = promoters;
+			document.querySelector("#passives").textContent = passives;
+			document.querySelector("#detractors").textContent = detractors;
+			document.querySelector("#nps").textContent = total
+				? Math.round((promoters / total - detractors / total) * 100)
+				: "—";
+			document.querySelector("#response-count").textContent = total === 1
+				? "1 resposta registrada."
+				: `${total} respostas registradas.`;
+		}
+
+		function getFunnelCounts() {
+			try {
+				const savedCounts = JSON.parse(localStorage.getItem(FUNNEL_STORAGE_KEY) || "{}");
+				return Object.fromEntries(funnelStages.map(stage => [
+					stage,
+					Number.isInteger(savedCounts[stage]) && savedCounts[stage] >= 0 ? savedCounts[stage] : 0
+				]));
+			} catch {
+				return Object.fromEntries(funnelStages.map(stage => [stage, 0]));
+			}
+		}
+
+		function updateFunnelResults() {
+			const counts = getFunnelCounts();
+			let largestDrop = { stage: null, percentage: 0 };
+
+			funnelStages.forEach((stage, index) => {
+				document.querySelector(`#${stage}-count`).textContent = counts[stage];
+				const stageElement = document.querySelector(`[data-stage="${stage}"].funnel-stage`);
+				stageElement.classList.remove("is-largest-drop");
+
+				if (index === 0) return;
+
+				const previousCount = counts[funnelStages[index - 1]];
+				const conversion = previousCount ? counts[stage] / previousCount * 100 : null;
+				document.querySelector(`#${stage}-conversion`).textContent = conversion === null
+					? "Sem dados da etapa anterior"
+					: `${conversion.toFixed(1)}% de conversão`;
+
+				const drop = conversion === null ? 0 : Math.max(0, 100 - conversion);
+				if (drop > largestDrop.percentage) largestDrop = { stage, percentage: drop };
+			});
+
+			const dropNote = document.querySelector("#largest-drop");
+			if (largestDrop.stage) {
+				document.querySelector(`[data-stage="${largestDrop.stage}"].funnel-stage`).classList.add("is-largest-drop");
+				dropNote.textContent = `Maior queda: ${largestDrop.percentage.toFixed(1)}% em ${funnelStageLabels[largestDrop.stage]}.`;
+				dropNote.hidden = false;
+			} else {
+				dropNote.hidden = true;
+			}
+		}
+
+		function recordFunnelEvent(stage) {
+			const counts = getFunnelCounts();
+			counts[stage] += 1;
+			localStorage.setItem(FUNNEL_STORAGE_KEY, JSON.stringify(counts));
+			updateFunnelResults();
+		}
+
+		document.querySelectorAll("[data-funnel-stage]").forEach(button => {
+			button.addEventListener("click", () => recordFunnelEvent(button.dataset.funnelStage));
+		});
+
+		form.addEventListener("submit", event => {
+			event.preventDefault();
+			const selected = form.querySelector('input[name="score"]:checked');
+			if (!selected) return;
+
+			const responses = getResponses();
+			responses.push(Number(selected.value));
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(responses));
+			if (Number(selected.value) >= 9) recordFunnelEvent("recommendation");
+			updateResults();
+			feedback.textContent = "Resposta registrada. Obrigado!";
+			form.reset();
+		});
+
+		recordFunnelEvent("acquisition");
+		updateResults();
+	</script>
+</body>
+</html>
+
+>>>>>>> 3b2f5ac483a3d741c6230d400f99c443b489759d

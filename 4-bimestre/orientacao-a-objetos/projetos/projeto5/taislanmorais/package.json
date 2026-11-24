@@ -1,16 +1,15 @@
+
 {
-  "name": "projeto5-taislanmorais",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "jest"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "jest": "^30.5.2"
-  }
+    "name": "quadra-esportiva-status",
+    "version": "1.0.0",
+    "description": "Servidor de status da quadra esportiva",
+    "main": "servidor.js",
+    "scripts": {
+        "start": "node servidor.js",
+        "dev": "node --watch --env-file=.env servidor.js",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "jest": "^30.0.0"
+    }
 }

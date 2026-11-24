@@ -193,9 +193,17 @@ Um grupo sugere imediatamente:
 Antes de desenvolver qualquer coisa, responda:
 
 1. Qual seria a primeira coisa que a equipe deveria descobrir?
+REPOSTA:
 2. Cite duas perguntas que poderiam ser feitas aos alunos.
+<<<<<<< HEAD
 3. Por que não é recomendado começar desenvolvendo o aplicativo imediatamente?
 
 1. Descobrir qual problema os alunos realmente enfrentam.
 2. Como você recebe informações da escola? / O que dificulta sua comunicação com a escola?
 3. Porque é preciso entender a necessidade do usuário antes de desenvolver.
+=======
+PERGUNTA 1:Como você recebe as informações da escola atualmente?
+PERGUNTA 2:O que é mais difícil na comunicação com a escola?
+3. Por que não é recomendado começar desenvolvendo o aplicativo imediatamente?
+RESPOSTA:Porque a equipe pode criar algo que os alunos não precisam ou não utilizam. Primeiro é necessário entender o problema real e as necessidades dos usuários para depois pensar na melhor solução.
+>>>>>>> 3b2f5ac483a3d741c6230d400f99c443b489759d

@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3b2f5ac483a3d741c6230d400f99c443b489759d
 const projeto = {
     nome: "aula01",
 
@@ -12,4 +16,8 @@ const projeto = {
     }
 }
 
+<<<<<<< HEAD
 module.exports = projeto
+=======
+module.exports = projeto
+>>>>>>> 3b2f5ac483a3d741c6230d400f99c443b489759d

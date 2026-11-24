@@ -1,0 +1,17 @@
+
+[
+    {
+        "id": 1,
+        "ciclista": "Ana",
+        "peca": "Pneu",
+        "valor": 90,
+        "situacao": "aberto"
+    },
+    {
+        "id": 2,
+        "ciclista": "Bruno",
+        "peca": "Corrente",
+        "valor": 65,
+        "situacao": "em bancada"
+    }
+]

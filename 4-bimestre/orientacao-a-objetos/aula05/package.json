@@ -1,5 +1,6 @@
 
 {
+<<<<<<< HEAD
   "name": "aula05",
   "version": "1.0.0",
   "description": "Entender o que é o Express. Instalar e configurar o Express num projeto. Criar rotas com app.get e app.post. Responder em JSON com res.json e definir o status da resposta.",
@@ -20,4 +21,23 @@
     "jest": "^30.4.2",
     "supertest": "^7.1.4"
   }
+=======
+    "name": "aula05-api-livros",
+    "version": "1.0.0",
+    "description": "API de livros utilizando Express",
+    "main": "index.js",
+    "type": "commonjs",
+    "scripts": {
+        "test": "jest",
+        "start": "node servidor.js",
+        "dev": "node --watch --env-file=.env servidor.js"
+    },
+    "dependencies": {
+        "express": "^5.1.0"
+    },
+    "devDependencies": {
+        "jest": "^30.0.0",
+        "supertest": "^7.1.0"
+    }
+>>>>>>> 3b2f5ac483a3d741c6230d400f99c443b489759d
 }
